@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.ValueProvider;
-import com.vaadin.peter.foundation.DataGridService;
+import com.vaadin.peter.foundation.datagrid.DataGridService;
 import com.vaadin.peter.foundation.datagrid.DataSource;
 
 /**

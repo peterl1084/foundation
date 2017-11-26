@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.vaadin.peter.foundation.Customer;
 import com.vaadin.peter.foundation.CustomerTestDataSource;
 import com.vaadin.peter.foundation.CustomerTestGridDefinition;
-import com.vaadin.peter.foundation.DataGridService;
-import com.vaadin.peter.foundation.DataGridServiceBean;
+import com.vaadin.peter.foundation.datagrid.DataGridService;
+import com.vaadin.peter.foundation.datagrid.DataGridServiceBean;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

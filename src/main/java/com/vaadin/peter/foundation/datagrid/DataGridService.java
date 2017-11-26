@@ -1,8 +1,7 @@
-package com.vaadin.peter.foundation;
+package com.vaadin.peter.foundation.datagrid;
 
 import java.util.Optional;
 
-import com.vaadin.peter.foundation.datagrid.DataSource;
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 
 public interface DataGridService {

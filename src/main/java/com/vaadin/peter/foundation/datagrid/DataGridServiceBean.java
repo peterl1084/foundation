@@ -1,4 +1,4 @@
-package com.vaadin.peter.foundation;
+package com.vaadin.peter.foundation.datagrid;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Service;
 
-import com.vaadin.peter.foundation.datagrid.DataSource;
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 
 @Service

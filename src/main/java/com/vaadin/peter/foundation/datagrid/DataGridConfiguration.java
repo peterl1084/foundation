@@ -4,16 +4,16 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.vaadin.spring.annotation.PrototypeScope;
 
-import com.vaadin.peter.foundation.DataGridService;
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 
 @Configuration
-class DataGridFactory {
-
+@ConditionalOnClass(DataGrid.class)
+public class DataGridConfiguration {
   private static final int ITEM_INDEX = 0;
   private static final int FILTER_INDEX = 1;
 

@@ -11,12 +11,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.vaadin.peter.foundation.Customer;
 import com.vaadin.peter.foundation.CustomerTestDataSource;
 import com.vaadin.peter.foundation.CustomerTestGridDefinition;
-import com.vaadin.peter.foundation.DataGridServiceBean;
 import com.vaadin.peter.foundation.FormatterTestFactory;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { DataGridServiceBean.class, CustomerTestDataSource.class, DataGridFactory.class,
+@ContextConfiguration(classes = { DataGridServiceBean.class, CustomerTestDataSource.class, DataGridConfiguration.class,
     CustomerTestGridDefinition.class, DataGridTestBean.class, FormatterTestFactory.class })
 public class DataGridTests {
 

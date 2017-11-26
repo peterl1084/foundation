@@ -5,11 +5,10 @@
 
 	<groupId>com.vaadin.peter</groupId>
 	<artifactId>foundation</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>foundation</name>
-	<description>Vaadin Spring App Foundation</description>
+	<name>Vaadin Foundation</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -22,7 +21,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<vaadin.version>8.2-SNAPSHOT</vaadin.version>
+		<vaadin.version>8.2.0.beta1</vaadin.version>
+		<vaadin.spring.ext.core.version>2.0.0.RELEASE</vaadin.spring.ext.core.version>
 		<mockito.version>2.12.0</mockito.version>
 	</properties>
 
@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>org.vaadin.spring.extensions</groupId>
 			<artifactId>vaadin-spring-ext-core</artifactId>
-			<version>2.0.0.RELEASE</version>
+			<version>${vaadin.spring.ext.core.version}</version>
 		</dependency>
 
 		<dependency>
@@ -66,16 +66,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 	<repositories>
 		<repository>
 			<id>spring-snapshots</id>
@@ -94,11 +84,11 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>vaadin-snapshots</id>
-			<name>Vaadin Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+			<id>vaadin-prereleases</id>
+			<name>Vaadin Pre releases</name>
+			<url>https://maven.vaadin.com/vaadin-prereleases/</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 
@@ -123,5 +113,34 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
 
 </project>
