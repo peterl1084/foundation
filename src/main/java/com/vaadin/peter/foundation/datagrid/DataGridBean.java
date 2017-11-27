@@ -1,8 +1,12 @@
 package com.vaadin.peter.foundation.datagrid;
 
 import java.util.Objects;
+import java.util.Optional;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import com.vaadin.data.provider.CallbackDataProvider.CountCallback;
 import com.vaadin.data.provider.CallbackDataProvider.FetchCallback;
@@ -10,10 +14,13 @@ import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 import com.vaadin.peter.foundation.formatter.Formatter;
+import com.vaadin.peter.foundation.toolbar.ToolBar;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.VerticalLayout;
 
-class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FILTER> {
+class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FILTER>, ApplicationContextAware {
 
   private Class<ITEM> itemType;
   private Class<FILTER> filterType;
@@ -23,13 +30,26 @@ class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FIL
 
   private Grid<ITEM> grid;
   private ConfigurableFilterDataProvider<ITEM, Void, FILTER> dataProvider;
+  private ApplicationContext applicationContext;
+  private ToolBar<ITEM> toolBar;
+
+  private VerticalLayout layout;
 
   public DataGridBean(Class<ITEM> itemType, Class<FILTER> filterType) {
+    layout = new VerticalLayout();
+    layout.setSizeFull();
+    layout.setMargin(false);
+    layout.setSpacing(false);
+
     this.itemType = Objects.requireNonNull(itemType);
     this.filterType = Objects.requireNonNull(filterType);
 
     grid = new Grid<>();
-    setCompositionRoot(grid);
+    grid.setSizeFull();
+
+    layout.addComponent(grid);
+    layout.setExpandRatio(grid, 1);
+    setCompositionRoot(layout);
   }
 
   protected void setGridDefinition(GridDefinition<ITEM, FILTER> gridDefinition) {
@@ -60,7 +80,7 @@ class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FIL
   }
 
   public int getNumberOfColumns() {
-    return grid.getColumns().size();
+    return (int) grid.getColumns().stream().filter(column -> !column.isHidden()).count();
   }
 
   public int getNumberOfRows() {
@@ -74,7 +94,8 @@ class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FIL
 
   @Override
   public void refresh() {
-
+    dataProvider.refreshAll();
+    getToolBar().ifPresent(ToolBar::refresh);
   }
 
   @Override
@@ -85,5 +106,33 @@ class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FIL
   @Override
   public Class<FILTER> getFilterType() {
     return filterType;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public ToolBar<ITEM> withToolBar() {
+    return getToolBar().orElseGet(() -> {
+      toolBar = applicationContext.getBean(ToolBar.class);
+      toolBar.withItemProvider(() -> grid.getSelectedItems());
+      grid.addSelectionListener(selectionEvent -> {
+        toolBar.refresh();
+      });
+      layout.addComponent(toolBar.asComponent());
+      return toolBar;
+    });
+  }
+
+  protected Optional<ToolBar<ITEM>> getToolBar() {
+    return Optional.ofNullable(toolBar);
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  @Override
+  public void setSelectionMode(SelectionMode selectionMode) {
+    grid.setSelectionMode(Objects.requireNonNull(selectionMode));
   }
 }
