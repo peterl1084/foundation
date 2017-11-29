@@ -33,4 +33,9 @@ public class CustomerTestDataSource implements DataSource<Customer, Void> {
   public Stream<Customer> getData(Query<Customer, Void> query) {
     return testCustomers.stream().skip(query.getOffset()).limit(query.getLimit());
   }
+
+  @Override
+  public boolean isInMemory() {
+    return true;
+  }
 }

@@ -11,6 +11,8 @@ public class GridColumnImpl<ITEM, PROPERTY> implements GridColumn<ITEM, PROPERTY
   private String translationKey;
   private boolean hiddenByDefault;
 
+  private boolean sortable;
+
   void setPropertyValueProvider(ValueProvider<ITEM, PROPERTY> propertyValueProvider) {
     this.propertyValueProvider = Objects.requireNonNull(propertyValueProvider);
   }
@@ -35,5 +37,13 @@ public class GridColumnImpl<ITEM, PROPERTY> implements GridColumn<ITEM, PROPERTY
 
   public boolean isHiddenByDefault() {
     return hiddenByDefault;
+  }
+
+  public void asSortable() {
+    sortable = true;
+  }
+
+  public boolean isSortable() {
+    return sortable;
   }
 }

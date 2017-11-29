@@ -4,15 +4,20 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.DependencyDescriptor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.vaadin.spring.annotation.PrototypeScope;
 
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 
+/**
+ * {@link DataGridConfiguration} provides {@link DataGrid} as bean with
+ * preconfigured {@link GridDefinition} based on the ITEM and FILTER type of the
+ * injection point.
+ * 
+ * @author Peter / Vaadin
+ */
 @Configuration
-@ConditionalOnClass(DataGrid.class)
 public class DataGridConfiguration {
   private static final int ITEM_INDEX = 0;
   private static final int FILTER_INDEX = 1;
@@ -29,7 +34,9 @@ public class DataGridConfiguration {
     DataGridBean<ITEM, FILTER> dataGrid = new DataGridBean<>(itemType, filterType);
 
     Optional<GridDefinition<ITEM, FILTER>> gridDefinition = dataGridService.findGridDefinition(itemType, filterType);
-    gridDefinition.ifPresent(dataGrid::setGridDefinition);
+    dataGrid.setGridDefinition(
+        gridDefinition.orElseThrow(() -> new RuntimeException("Could not find " + GridDefinition.class.getSimpleName()
+            + " for data grid with types: " + itemType.getCanonicalName() + ", " + filterType.getCanonicalName())));
 
     return dataGrid;
   }

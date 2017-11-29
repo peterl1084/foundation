@@ -8,15 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.vaadin.data.provider.CallbackDataProvider.CountCallback;
-import com.vaadin.data.provider.CallbackDataProvider.FetchCallback;
 import com.vaadin.data.provider.ConfigurableFilterDataProvider;
-import com.vaadin.data.provider.DataProvider;
 import com.vaadin.peter.foundation.datagrid.definition.GridDefinition;
 import com.vaadin.peter.foundation.formatter.Formatter;
+import com.vaadin.peter.foundation.i18n.Translations;
 import com.vaadin.peter.foundation.toolbar.ToolBar;
 import com.vaadin.ui.Composite;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.VerticalLayout;
 
@@ -53,29 +52,28 @@ class DataGridBean<ITEM, FILTER> extends Composite implements DataGrid<ITEM, FIL
   }
 
   protected void setGridDefinition(GridDefinition<ITEM, FILTER> gridDefinition) {
-    configureColumns(Objects.requireNonNull(gridDefinition));
     configureDataProvider(gridDefinition);
+    configureColumns(Objects.requireNonNull(gridDefinition));
   }
 
   protected void configureColumns(GridDefinition<ITEM, FILTER> gridDefinition) {
     grid.removeAllColumns();
 
     gridDefinition.getColumns().forEach(columnDefinition -> {
-      grid.addColumn(item -> {
+      Column<ITEM, ?> gridColumn = grid.addColumn(item -> {
         return columnDefinition.getPropertyValueProvider().apply(item);
       }, value -> {
         return formatter.formatToText(value);
       });
+
+      gridColumn.setCaption(Translations.t(columnDefinition.getTranslationKey()));
+      gridColumn.setSortable(columnDefinition.isSortable());
     });
   }
 
   protected void configureDataProvider(GridDefinition<ITEM, FILTER> gridDefinition) {
-    DataSource<ITEM, FILTER> dataSource = gridDefinition.getAssociatedDataSource();
-
-    FetchCallback<ITEM, FILTER> fetch = query -> dataSource.getData(query);
-    CountCallback<ITEM, FILTER> count = query -> dataSource.getSize(query);
-
-    dataProvider = DataProvider.fromFilteringCallbacks(fetch, count).withConfigurableFilter();
+    DataSourceDataProvider<ITEM, FILTER> dataProvider = new DataSourceDataProvider<>(
+        gridDefinition.getAssociatedDataSource());
     grid.setDataProvider(dataProvider);
   }
 

@@ -20,4 +20,5 @@ public interface GridColumn<ITEM, PROPERTY> {
 
   boolean isHiddenByDefault();
 
+  boolean isSortable();
 }
